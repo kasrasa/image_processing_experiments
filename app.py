@@ -28,23 +28,155 @@ from src.operation_registry import (
 from src.operations import OperationResult, apply_operation
 
 st.set_page_config(
-    page_title="OpenCV Parameter Explorer",
+    page_title="OpenCV Parameter Explorer | Echelon Consulting",
     page_icon="◉",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
+st.sidebar.markdown("## Experiment setup")
+selected_theme = st.sidebar.segmented_control(
+    "Appearance",
+    ("Light", "Dark"),
+    default="Light",
+    key="appearance_theme",
+    help="Switch the entire explorer between light and dark mode.",
+    width="stretch",
+)
+dark_mode = selected_theme == "Dark"
+
+if dark_mode:
+    theme_tokens = """
+        :root {
+            --lab-bg: #0b1120;
+            --lab-color-scheme: dark;
+            --lab-sidebar-bg: #111827;
+            --lab-surface: #111827;
+            --lab-surface-soft: #182234;
+            --lab-control-bg: #172033;
+            --lab-header-bg: rgba(11, 17, 32, 0.92);
+            --lab-ink: #f8fafc;
+            --lab-muted: #cbd5e1;
+            --lab-accent: #a3e635;
+            --lab-accent-bright: #a3e635;
+            --lab-accent-soft: #365314;
+            --lab-line: rgba(203, 213, 225, 0.22);
+            --lab-hero-glow: rgba(163, 230, 53, 0.20);
+            --lab-hero-start: rgba(255, 255, 255, 0.035);
+            --lab-hero-end: rgba(77, 124, 15, 0.22);
+            --lab-slogan: #e5e7eb;
+            --lab-badge-bg: rgba(15, 23, 42, 0.88);
+            --lab-badge-text: #d0d5dd;
+            --lab-metric-bg: rgba(17, 24, 39, 0.84);
+            --lab-callout-bg: rgba(54, 83, 20, 0.36);
+            --lab-callout-border: rgba(163, 230, 53, 0.28);
+        }
+    """
+else:
+    theme_tokens = """
+        :root {
+            --lab-bg: #fbfcfe;
+            --lab-color-scheme: light;
+            --lab-sidebar-bg: #f1f5f9;
+            --lab-surface: #ffffff;
+            --lab-surface-soft: #f8fafc;
+            --lab-control-bg: #ffffff;
+            --lab-header-bg: rgba(251, 252, 254, 0.92);
+            --lab-ink: #0b1220;
+            --lab-muted: #475467;
+            --lab-accent: #4d7c0f;
+            --lab-accent-bright: #a3e635;
+            --lab-accent-soft: #ecfccb;
+            --lab-line: rgba(71, 84, 103, 0.22);
+            --lab-hero-glow: rgba(163, 230, 53, 0.25);
+            --lab-hero-start: rgba(15, 23, 42, 0.06);
+            --lab-hero-end: rgba(132, 204, 22, 0.11);
+            --lab-slogan: #344054;
+            --lab-badge-bg: rgba(255, 255, 255, 0.76);
+            --lab-badge-text: #344054;
+            --lab-metric-bg: rgba(248, 250, 252, 0.72);
+            --lab-callout-bg: rgba(236, 252, 203, 0.46);
+            --lab-callout-border: rgba(77, 124, 15, 0.20);
+        }
+    """
 
 st.markdown(
-    """
-    <style>
-        :root {
-            --lab-ink: #172033;
-            --lab-muted: #64748b;
-            --lab-accent: #0f766e;
-            --lab-accent-soft: #ccfbf1;
-            --lab-warm: #f59e0b;
-            --lab-line: rgba(100, 116, 139, 0.22);
+    "<style>"
+    + theme_tokens
+    + """
+        .stApp,
+        [data-testid="stAppViewContainer"],
+        [data-testid="stMain"] {
+            background: var(--lab-bg);
+            color: var(--lab-ink);
+            color-scheme: var(--lab-color-scheme);
+        }
+        [data-testid="stHeader"] {
+            background: var(--lab-header-bg);
+        }
+        [data-testid="stSidebar"] {
+            background: var(--lab-sidebar-bg);
+            border-right: 1px solid var(--lab-line);
+        }
+        [data-testid="stSidebar"] h1,
+        [data-testid="stSidebar"] h2,
+        [data-testid="stSidebar"] h3,
+        [data-testid="stSidebar"] p,
+        [data-testid="stSidebar"] label,
+        [data-testid="stWidgetLabel"] p,
+        [data-testid="stCaptionContainer"] p,
+        [data-testid="stMetricLabel"] p,
+        [data-testid="stMetricValue"] div,
+        button[role="tab"] {
+            color: var(--lab-ink);
+        }
+        [data-testid="stMarkdownContainer"] > h1,
+        [data-testid="stMarkdownContainer"] > h2,
+        [data-testid="stMarkdownContainer"] > h3,
+        [data-testid="stMarkdownContainer"] > h4,
+        [data-testid="stMarkdownContainer"] > p {
+            color: var(--lab-ink);
+        }
+        [data-testid="stColumn"] [data-testid="stLayoutWrapper"] {
+            background: var(--lab-surface);
+            border-color: var(--lab-line) !important;
+        }
+        [data-baseweb="select"] > div,
+        [data-baseweb="input"],
+        [data-testid="stSelectbox"] [role="group"],
+        [data-testid="stFileUploaderDropzone"] {
+            background: var(--lab-control-bg) !important;
+            border-color: var(--lab-line) !important;
+            color: var(--lab-ink) !important;
+        }
+        [data-baseweb="select"] span,
+        [data-baseweb="select"] svg,
+        [data-testid="stSelectbox"] input,
+        [data-testid="stSelectbox"] button,
+        [data-testid="stSelectbox"] svg,
+        [data-testid="stFileUploaderDropzone"] small {
+            background: transparent !important;
+            color: var(--lab-ink) !important;
+            fill: var(--lab-ink) !important;
+        }
+        [data-testid="stDownloadButton"] button,
+        [data-testid="stBaseButton-secondary"] {
+            background: var(--lab-surface);
+            border-color: var(--lab-line);
+            color: var(--lab-ink);
+        }
+        [data-testid="stButtonGroup"] button[data-variant="segmented_control"] {
+            background: var(--lab-control-bg) !important;
+            border-color: var(--lab-line) !important;
+            color: var(--lab-ink) !important;
+        }
+        [data-testid="stButtonGroup"] button[data-variant="segmented_control"] p {
+            color: var(--lab-ink) !important;
+        }
+        [data-testid="stButtonGroup"] button[data-variant="segmented_control"][data-selected="true"] {
+            background: var(--lab-accent-soft) !important;
+            border-color: var(--lab-accent) !important;
+            color: var(--lab-ink) !important;
         }
         .block-container {
             max-width: 1440px;
@@ -52,24 +184,31 @@ st.markdown(
             padding-bottom: 4rem;
         }
         .lab-hero {
-            padding: 1.45rem 1.6rem;
+            isolation: isolate;
+            overflow: hidden;
+            padding: 1.55rem 1.7rem;
             margin-bottom: 1.25rem;
             border: 1px solid var(--lab-line);
             border-radius: 18px;
+            position: relative;
             background:
-                radial-gradient(circle at 92% 18%, rgba(20, 184, 166, 0.20), transparent 26%),
-                linear-gradient(125deg, rgba(15, 118, 110, 0.08), rgba(245, 158, 11, 0.07));
+                radial-gradient(circle at 92% 18%, var(--lab-hero-glow), transparent 27%),
+                linear-gradient(125deg, var(--lab-hero-start), var(--lab-hero-end));
         }
         .lab-eyebrow {
             color: var(--lab-accent);
             font-size: 0.76rem;
             font-weight: 750;
             letter-spacing: 0.13em;
+            line-height: 1.45;
             margin-bottom: 0.45rem;
+            overflow-wrap: anywhere;
+            padding-right: 20rem;
             text-transform: uppercase;
+            white-space: normal !important;
         }
         .lab-hero h1 {
-            color: var(--lab-ink);
+            color: var(--lab-ink) !important;
             font-size: clamp(2rem, 4vw, 3.45rem);
             letter-spacing: -0.045em;
             line-height: 1.02;
@@ -81,6 +220,43 @@ st.markdown(
             line-height: 1.6;
             margin: 0.7rem 0 0;
             max-width: 760px;
+        }
+        .lab-slogan {
+            align-items: center;
+            color: var(--lab-slogan);
+            display: flex;
+            font-size: 0.8rem;
+            font-weight: 700;
+            gap: 0.5rem;
+            letter-spacing: 0.035em;
+            margin-top: 0.8rem;
+        }
+        .lab-slogan::before {
+            background: var(--lab-accent-bright);
+            border-radius: 999px;
+            content: "";
+            height: 0.5rem;
+            width: 0.5rem;
+        }
+        .lab-powered {
+            backdrop-filter: blur(8px);
+            background: var(--lab-badge-bg);
+            border: 1px solid rgba(77, 124, 15, 0.22);
+            border-radius: 999px;
+            color: var(--lab-badge-text);
+            font-size: 0.69rem;
+            font-weight: 650;
+            letter-spacing: 0.035em;
+            line-height: 1.35;
+            max-width: 19rem;
+            padding: 0.5rem 0.72rem;
+            position: absolute;
+            right: 1.2rem;
+            text-align: center;
+            top: 1.15rem;
+        }
+        .lab-powered strong {
+            color: var(--lab-ink);
         }
         .lab-technique {
             border-left: 4px solid var(--lab-accent);
@@ -101,26 +277,55 @@ st.markdown(
             border-radius: 10px;
         }
         [data-testid="stMetric"] {
-            background: rgba(248, 250, 252, 0.72);
+            background: var(--lab-metric-bg);
             border: 1px solid var(--lab-line);
             border-radius: 12px;
             padding: 0.75rem 0.9rem;
         }
-        [data-testid="stSidebar"] {
-            border-right: 1px solid var(--lab-line);
-        }
         .lab-callout {
-            background: rgba(204, 251, 241, 0.35);
-            border: 1px solid rgba(15, 118, 110, 0.18);
+            background: var(--lab-callout-bg);
+            border: 1px solid var(--lab-callout-border);
             border-radius: 12px;
             color: var(--lab-ink);
             line-height: 1.55;
             padding: 0.9rem 1rem;
         }
-        @media (prefers-color-scheme: dark) {
-            .lab-hero h1, .lab-technique strong, .lab-callout { color: #f8fafc; }
-            .lab-hero p, .lab-technique span { color: #cbd5e1; }
-            [data-testid="stMetric"] { background: rgba(15, 23, 42, 0.55); }
+        .lab-consulting {
+            background:
+                radial-gradient(circle at 96% 12%, rgba(163, 230, 53, 0.20), transparent 31%),
+                #111827;
+            border: 1px solid rgba(163, 230, 53, 0.28);
+            border-radius: 14px;
+            margin-top: 1.6rem;
+            overflow: hidden;
+            padding: 1rem 1.15rem;
+        }
+        .lab-consulting p {
+            color: #e2e8f0;
+            font-size: 0.95rem;
+            line-height: 1.55;
+            margin: 0;
+        }
+        .lab-consulting a {
+            color: #bef264 !important;
+            font-weight: 750;
+            text-decoration: none !important;
+        }
+        .lab-consulting a:hover {
+            text-decoration: underline !important;
+        }
+        @media (max-width: 900px) {
+            .lab-hero {
+                padding-right: 1.7rem;
+            }
+            .lab-eyebrow {
+                padding-right: 0;
+            }
+            .lab-powered {
+                display: inline-block;
+                margin-top: 1rem;
+                position: static;
+            }
         }
     </style>
     """,
@@ -245,18 +450,21 @@ def luminance_histogram(image: np.ndarray) -> np.ndarray:
 st.markdown(
     """
     <div class="lab-hero">
-        <div class="lab-eyebrow">Interactive computer vision playground</div>
+        <div class="lab-eyebrow">Echelon Consulting · Interactive image processing lab</div>
         <h1>OpenCV Parameter Explorer</h1>
         <p>
             See what each parameter changes, compare settings side by side, and copy the
             exact Python behind the result. Start with the built-in test card or upload your own image.
         </p>
+        <div class="lab-slogan">Research mindset. Production habits.</div>
+        <div class="lab-powered">
+            Powered by <strong>Echelon Consulting</strong>
+        </div>
     </div>
     """,
     unsafe_allow_html=True,
 )
 
-st.sidebar.markdown("## Experiment setup")
 st.sidebar.caption("Your uploaded image is processed only in the running app session.")
 image_source = st.sidebar.radio(
     "Image source",
@@ -439,9 +647,21 @@ with histogram_tab:
         }
     )
     histogram_data.index.name = "Brightness"
-    st.line_chart(histogram_data, color=["#64748b", "#0f766e"])
+    chart_colors = ["#94a3b8", "#a3e635"] if dark_mode else ["#64748b", "#65a30d"]
+    st.line_chart(histogram_data, color=chart_colors)
 
-st.divider()
-st.caption(
-    "Built from the experiments in this repository. Processing is deterministic so parameter comparisons stay meaningful."
+st.markdown(
+    """
+    <section class="lab-consulting" aria-label="About Echelon Consulting">
+        <p>
+            Need help designing, implementing, improving your AI project contact us at
+            <a
+                href="https://echelonconsulting.vercel.app"
+                target="_blank"
+                rel="noopener noreferrer"
+            >Echelon Consulting</a> can help.
+        </p>
+    </section>
+    """,
+    unsafe_allow_html=True,
 )

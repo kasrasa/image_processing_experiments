@@ -17,10 +17,34 @@ class AppSmokeTests(unittest.TestCase):
         self.assertEqual(len(app.exception), 0)
         self.assertEqual(app.selectbox[0].value, "Color spaces")
         self.assertEqual(app.selectbox[1].value, "HSV controls")
+        self.assertEqual(app.segmented_control[0].label, "Appearance")
+        self.assertEqual(app.segmented_control[0].value, "Light")
         self.assertEqual(
             [tab.label for tab in app.tabs],
             ["Learn", "Copy the code", "Compare settings", "Histogram"],
         )
+        rendered_markdown = "\n".join(block.value for block in app.markdown)
+        normalized_markdown = " ".join(rendered_markdown.split())
+        self.assertIn("Powered by", rendered_markdown)
+        self.assertIn("Kasra Sadatsharifi", rendered_markdown)
+        self.assertIn("Echelon Consulting", rendered_markdown)
+        self.assertIn("Research mindset. Production habits.", rendered_markdown)
+        self.assertIn(
+            "If you need help designing or implementing an AI project—or improving an existing "
+            "AI feature—Kasra at",
+            normalized_markdown,
+        )
+        self.assertIn("https://echelonconsulting.vercel.app", rendered_markdown)
+
+    def test_appearance_control_switches_to_dark_theme(self) -> None:
+        app = AppTest.from_file(self.app_path, default_timeout=30).run()
+        app.segmented_control[0].set_value("Dark").run()
+
+        self.assertEqual(len(app.exception), 0)
+        self.assertEqual(app.segmented_control[0].value, "Dark")
+        rendered_markdown = "\n".join(block.value for block in app.markdown)
+        self.assertIn("--lab-bg: #0b1120", rendered_markdown)
+        self.assertIn("--lab-color-scheme: dark", rendered_markdown)
 
     def test_switching_to_canny_updates_controls_and_code(self) -> None:
         app = AppTest.from_file(self.app_path, default_timeout=30).run()
