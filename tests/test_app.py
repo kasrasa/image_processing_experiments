@@ -24,11 +24,16 @@ class AppSmokeTests(unittest.TestCase):
             ["Learn", "Copy the code", "Compare settings", "Histogram"],
         )
         rendered_markdown = "\n".join(block.value for block in app.markdown)
+        normalized_markdown = " ".join(rendered_markdown.split())
         self.assertIn("Powered by", rendered_markdown)
         self.assertIn("Kasra Sadatsharifi", rendered_markdown)
         self.assertIn("Echelon Consulting", rendered_markdown)
         self.assertIn("Research mindset. Production habits.", rendered_markdown)
-        self.assertIn("Computer vision ideas, made testable.", rendered_markdown)
+        self.assertIn(
+            "If you need help designing or implementing an AI project—or improving an existing "
+            "AI feature—Kasra at",
+            normalized_markdown,
+        )
         self.assertIn("https://echelonconsulting.vercel.app", rendered_markdown)
 
     def test_appearance_control_switches_to_dark_theme(self) -> None:

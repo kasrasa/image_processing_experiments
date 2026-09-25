@@ -291,71 +291,28 @@ st.markdown(
             padding: 0.9rem 1rem;
         }
         .lab-consulting {
-            align-items: center;
             background:
                 radial-gradient(circle at 96% 12%, rgba(163, 230, 53, 0.20), transparent 31%),
                 #111827;
             border: 1px solid rgba(163, 230, 53, 0.28);
-            border-radius: 18px;
-            display: grid;
-            gap: 1.4rem;
-            grid-template-columns: minmax(0, 1.45fr) minmax(16rem, 0.75fr);
+            border-radius: 14px;
             margin-top: 1.6rem;
             overflow: hidden;
-            padding: 1.35rem 1.45rem;
-        }
-        .lab-consulting-eyebrow {
-            color: #bef264;
-            font-size: 0.72rem;
-            font-weight: 750;
-            letter-spacing: 0.14em;
-            margin-bottom: 0.35rem;
-            text-transform: uppercase;
-        }
-        .lab-consulting h3 {
-            color: #f8fafc !important;
-            font-size: 1.45rem;
-            letter-spacing: -0.02em;
-            line-height: 1.2;
-            margin: 0;
+            padding: 1rem 1.15rem;
         }
         .lab-consulting p {
-            color: #cbd5e1;
+            color: #e2e8f0;
+            font-size: 0.95rem;
             line-height: 1.55;
-            margin: 0.45rem 0 0;
-            max-width: 760px;
+            margin: 0;
         }
-        .lab-consulting-actions {
-            align-items: flex-start;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-        .lab-services {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-        }
-        .lab-services span {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            border-radius: 999px;
-            color: #e5e7eb;
-            font-size: 0.72rem;
-            padding: 0.34rem 0.58rem;
-        }
-        .lab-brand-link {
-            background: var(--lab-accent-bright);
-            border-radius: 9px;
-            color: #17210b !important;
-            display: inline-block;
-            font-size: 0.84rem;
+        .lab-consulting a {
+            color: #bef264 !important;
             font-weight: 750;
-            padding: 0.58rem 0.78rem;
             text-decoration: none !important;
         }
-        .lab-brand-link:hover {
-            background: #bef264;
+        .lab-consulting a:hover {
+            text-decoration: underline !important;
         }
         @media (max-width: 900px) {
             .lab-hero {
@@ -368,9 +325,6 @@ st.markdown(
                 display: inline-block;
                 margin-top: 1rem;
                 position: static;
-            }
-            .lab-consulting {
-                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -699,28 +653,15 @@ with histogram_tab:
 st.markdown(
     """
     <section class="lab-consulting" aria-label="About Echelon Consulting">
-        <div>
-            <div class="lab-consulting-eyebrow">Echelon Consulting</div>
-            <h3>Computer vision ideas, made testable.</h3>
-            <p>
-                Need an image-processing prototype or a practical machine-learning proof of concept?
-                Echelon Consulting turns technical questions into measurable experiments, clear
-                decisions, and production-ready paths.
-            </p>
-        </div>
-        <div class="lab-consulting-actions">
-            <div class="lab-services">
-                <span>Computer vision</span>
-                <span>ML prototyping</span>
-                <span>Production integration</span>
-            </div>
+        <p>
+            If you need help designing or implementing an AI project—or improving an existing AI
+            feature—Kasra at
             <a
-                class="lab-brand-link"
                 href="https://echelonconsulting.vercel.app"
                 target="_blank"
                 rel="noopener noreferrer"
-            >Visit Echelon Consulting ↗</a>
-        </div>
+            >Echelon Consulting</a> can help.
+        </p>
     </section>
     """,
     unsafe_allow_html=True,
