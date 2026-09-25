@@ -665,7 +665,3 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-st.caption(
-    "An Echelon Consulting learning lab · Built by Kasra Sadatsharifi"
-)
