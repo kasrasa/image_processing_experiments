@@ -450,7 +450,7 @@ def luminance_histogram(image: np.ndarray) -> np.ndarray:
 st.markdown(
     """
     <div class="lab-hero">
-        <div class="lab-eyebrow">Echelon Consulting · Interactive computer vision lab</div>
+        <div class="lab-eyebrow">Echelon Consulting · Interactive image processing lab</div>
         <h1>OpenCV Parameter Explorer</h1>
         <p>
             See what each parameter changes, compare settings side by side, and copy the
@@ -458,7 +458,7 @@ st.markdown(
         </p>
         <div class="lab-slogan">Research mindset. Production habits.</div>
         <div class="lab-powered">
-            Powered by <strong>Kasra Sadatsharifi</strong> · <strong>Echelon Consulting</strong>
+            Powered by <strong>Echelon Consulting</strong>
         </div>
     </div>
     """,
@@ -654,8 +654,7 @@ st.markdown(
     """
     <section class="lab-consulting" aria-label="About Echelon Consulting">
         <p>
-            If you need help designing or implementing an AI project—or improving an existing AI
-            feature—Kasra at
+            Need help designing, implementing, improving your AI project contact us at
             <a
                 href="https://echelonconsulting.vercel.app"
                 target="_blank"
@@ -668,6 +667,5 @@ st.markdown(
 )
 
 st.caption(
-    "An Echelon Consulting learning lab · Built by Kasra Sadatsharifi · "
-    "Deterministic processing keeps parameter comparisons meaningful."
+    "An Echelon Consulting learning lab · Built by Kasra Sadatsharifi"
 )
