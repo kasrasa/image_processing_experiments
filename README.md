@@ -11,6 +11,9 @@ The app turns a collection of image-processing experiments into a structured,
 browser-based playground. It is also a working example of Echelon Consulting's approach:
 research mindset, production habits, and clear technical communication.
 
+Visitors can also send private feedback and feature requests from inside the app. The
+notification recipient is configured outside the repository and is never displayed publicly.
+
 ![OpenCV Parameter Explorer interface](docs/opencv-parameter-explorer.png)
 
 ## What you can explore
@@ -49,6 +52,8 @@ Streamlit will print a local address, normally
 5. Open **Learn** for parameter guidance, **Compare settings** for a three-value sweep,
    and **Copy the code** to reuse the current OpenCV operation.
 6. Download the processed result as a PNG if you want to inspect it elsewhere.
+7. Use the feedback form to suggest another technique, report something unclear, or share
+   what worked well.
 
 Uploaded images are processed in the running Streamlit session. Files are not stored by
 the app. Inputs larger than 1,400 pixels on their longest side are reduced for a responsive
@@ -58,11 +63,14 @@ preview.
 
 ```text
 app.py                         Streamlit interface
+src/feedback.py                Private feedback delivery and endpoint validation
 src/image_utils.py             Upload handling, sample image, and display helpers
 src/operation_registry.py      Technique descriptions and UI parameter definitions
 src/operations.py              Reusable OpenCV processing functions
+tests/test_feedback.py         Feedback privacy, payload, and failure checks
 tests/test_operations.py       Smoke and numeric-safety checks
 .streamlit/config.toml         Local and hosted visual theme
+.streamlit/secrets.toml.example  Feedback endpoint template (no real secrets)
 ```
 
 ## Verify the processing layer
@@ -82,6 +90,20 @@ the hosted app does not require desktop GUI libraries.
 
 Deployment is intentionally separate from local development, so the interface can be
 reviewed and tested before it becomes public.
+
+### Enable private feedback notifications
+
+1. Create a form at [Formspree](https://formspree.io) and configure its notification email.
+2. Copy its endpoint, which looks like `https://formspree.io/f/your-form-id`.
+3. In Streamlit Community Cloud, open the app's **Settings → Secrets** and add:
+
+   ```toml
+   FORMSPREE_ENDPOINT = "https://formspree.io/f/your-form-id"
+   ```
+
+For local testing, copy `.streamlit/secrets.toml.example` to `.streamlit/secrets.toml` and
+replace the placeholder. The real secrets file is ignored by Git. The notification email
+stays in Formspree and is not stored in the repository or rendered in the app.
 
 ## About Echelon Consulting
 

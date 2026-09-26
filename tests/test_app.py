@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import unittest
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 from streamlit.testing.v1 import AppTest
 
@@ -26,15 +27,56 @@ class AppSmokeTests(unittest.TestCase):
         rendered_markdown = "\n".join(block.value for block in app.markdown)
         normalized_markdown = " ".join(rendered_markdown.split())
         self.assertIn("Powered by", rendered_markdown)
-        self.assertIn("Kasra Sadatsharifi", rendered_markdown)
         self.assertIn("Echelon Consulting", rendered_markdown)
         self.assertIn("Research mindset. Production habits.", rendered_markdown)
         self.assertIn(
-            "If you need help designing or implementing an AI project—or improving an existing "
-            "AI feature—Kasra at",
+            "Need help designing, implementing, improving your AI project contact us at",
             normalized_markdown,
         )
         self.assertIn("https://echelonconsulting.vercel.app", rendered_markdown)
+        self.assertEqual(app.text_area[0].label, "Your feedback")
+        self.assertEqual(
+            app.text_input[0].label,
+            "Email for a reply (optional)",
+        )
+        self.assertEqual(app.radio[0].label, "What would you like to share?")
+        self.assertEqual(app.radio[0].value, "General feedback")
+        self.assertEqual(app.button[-1].label, "Send feedback")
+        self.assertNotIn("@gmail.com", rendered_markdown)
+
+    def test_feedback_validation_keeps_an_unsent_message_private(self) -> None:
+        app = AppTest.from_file(self.app_path, default_timeout=30).run()
+        app.text_area[0].set_value("A thoughtful feature request.")
+        app.button[-1].click().run()
+
+        self.assertEqual(len(app.exception), 0)
+        self.assertTrue(any("not configured yet" in error.value for error in app.error))
+        rendered_markdown = "\n".join(block.value for block in app.markdown)
+        self.assertNotIn("@gmail.com", rendered_markdown)
+
+    @patch.dict(
+        "os.environ",
+        {"FORMSPREE_ENDPOINT": "https://formspree.io/f/example-id"},
+    )
+    @patch("src.feedback.urlopen")
+    def test_feedback_submission_shows_a_private_success_message(
+        self, mock_urlopen: MagicMock
+    ) -> None:
+        response = MagicMock()
+        response.status = 200
+        mock_urlopen.return_value.__enter__.return_value = response
+
+        app = AppTest.from_file(self.app_path, default_timeout=30).run()
+        app.radio[0].set_value("Feature idea")
+        app.text_area[0].set_value("Please add another threshold comparison.")
+        app.text_input[0].set_value("visitor@example.com")
+        app.button[-1].click().run()
+
+        self.assertEqual(len(app.exception), 0)
+        self.assertTrue(
+            any("sent privately to Kasra" in success.value for success in app.success)
+        )
+        mock_urlopen.assert_called_once()
 
     def test_appearance_control_switches_to_dark_theme(self) -> None:
         app = AppTest.from_file(self.app_path, default_timeout=30).run()
