@@ -729,8 +729,8 @@ with st.container(border=True):
             st.warning("Please check the optional reply email or leave it blank.")
         elif not endpoint:
             st.error(
-                "Feedback delivery is not configured yet. Please try again after the public "
-                "demo is deployed."
+                "Sorry, something went wrong with feedback delivery."
+                "We are looking into it."
             )
         else:
             try:
