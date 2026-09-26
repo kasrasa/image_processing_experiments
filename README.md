@@ -92,28 +92,9 @@ the hosted app does not require desktop GUI libraries.
 Deployment is intentionally separate from local development, so the interface can be
 reviewed and tested before it becomes public.
 
-### Enable private feedback notifications
-
-1. Create a form at [Formspree](https://formspree.io) and configure its notification email.
-2. Copy its endpoint, which looks like `https://formspree.io/f/your-form-id`.
-3. In Streamlit Community Cloud, open the app's **Settings → Secrets** and add:
-
-   ```toml
-   FORMSPREE_ENDPOINT = "https://formspree.io/f/your-form-id"
-   ```
-
-The repository does not contain a secrets file. The real value belongs in Streamlit Community
-Cloud's **Secrets** field. For local development only, create `.streamlit/secrets.toml`, which
-is excluded by `.gitignore`, and use the same TOML setting shown above.
-
-Only the app owner needs a Formspree account. Visitors remain inside the explorer and submit
-anonymously without creating an account or opening a third-party page.
-
-The notification email stays in Formspree and is not stored in the repository or rendered in
-the app.
 
 ## About the author
 
-Kasra Sadatsharifi is a computer-vision and machine-learning engineer interested in turning
+I am a computer-vision and machine-learning engineer interested in turning
 technical experiments into clear, practical tools. More projects are available on
 [GitHub](https://github.com/kasrasa).
