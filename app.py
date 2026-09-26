@@ -696,8 +696,8 @@ with histogram_tab:
 with st.container(border=True):
     st.markdown("### How useful was this explorer?")
     st.caption(
-        "A quick reaction is enough. No account, sign-in, or email is required, and your "
-        "response is sent privately."
+        "Let us know what stood out, what could be improved, or what features you'd like to see next."
+        "We appreciate your feedback very much."
     )
     with st.form("feedback_form", clear_on_submit=True):
         feedback_rating = st.feedback(
