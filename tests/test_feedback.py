@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 from urllib.parse import parse_qs
 
@@ -16,6 +17,13 @@ from src.feedback import (
 
 
 class FeedbackDeliveryTests(unittest.TestCase):
+    repository_root = Path(__file__).resolve().parents[1]
+
+    def test_real_secret_file_is_gitignored(self) -> None:
+        gitignore = (self.repository_root / ".gitignore").read_text(encoding="utf-8")
+
+        self.assertIn(".streamlit/secrets.toml", gitignore)
+
     def test_endpoint_must_be_an_https_formspree_form(self) -> None:
         self.assertEqual(
             validate_formspree_endpoint(" https://formspree.io/f/example-id "),
