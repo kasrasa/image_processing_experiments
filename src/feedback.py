@@ -23,7 +23,8 @@ class FeedbackSubmission:
     category: str
     message: str
     technique: str
-    reply_email: str = ""
+    rating: int | None = None
+    highlights: tuple[str, ...] = ()
 
     def as_form_fields(self) -> dict[str, str]:
         """Return the fields expected by the hosted feedback form."""
@@ -35,8 +36,12 @@ class FeedbackSubmission:
             "current_technique": self.technique,
             "source": "OpenCV Parameter Explorer",
         }
-        if self.reply_email:
-            fields["email"] = self.reply_email
+        if self.rating is not None:
+            fields["rating"] = f"{self.rating + 1} / 5"
+        if self.highlights:
+            fields["highlights"] = ", ".join(self.highlights)
+        if not self.message:
+            fields["message"] = "No written comment"
         return fields
 
 

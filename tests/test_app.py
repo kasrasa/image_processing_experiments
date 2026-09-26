@@ -34,25 +34,40 @@ class AppSmokeTests(unittest.TestCase):
             normalized_markdown,
         )
         self.assertIn("https://echelonconsulting.vercel.app", rendered_markdown)
-        self.assertEqual(app.text_area[0].label, "Your feedback")
-        self.assertEqual(
-            app.text_input[0].label,
-            "Email for a reply (optional)",
+        self.assertEqual(len(app.feedback), 1)
+        self.assertIsNone(app.feedback[0].value)
+        self.assertEqual(app.pills[0].label, "What stood out? (optional)")
+        self.assertEqual(app.pills[0].value, [])
+        self.assertEqual(app.text_area[0].label, "Anything else I should know?")
+        self.assertEqual(app.button[-1].label, "Send anonymous feedback")
+        self.assertTrue(
+            any(
+                "No account, sign-in, or email is required" in caption.value
+                for caption in app.caption
+            )
         )
-        self.assertEqual(app.radio[0].label, "What would you like to share?")
-        self.assertEqual(app.radio[0].value, "General feedback")
-        self.assertEqual(app.button[-1].label, "Send feedback")
         self.assertNotIn("@gmail.com", rendered_markdown)
 
-    def test_feedback_validation_keeps_an_unsent_message_private(self) -> None:
+    def test_empty_feedback_prompts_for_one_quick_input(self) -> None:
         app = AppTest.from_file(self.app_path, default_timeout=30).run()
-        app.text_area[0].set_value("A thoughtful feature request.")
         app.button[-1].click().run()
 
         self.assertEqual(len(app.exception), 0)
-        self.assertTrue(any("not configured yet" in error.value for error in app.error))
+        self.assertTrue(
+            any("Choose a face" in warning.value for warning in app.warning)
+        )
         rendered_markdown = "\n".join(block.value for block in app.markdown)
         self.assertNotIn("@gmail.com", rendered_markdown)
+
+    def test_configured_delivery_is_required_after_feedback_is_given(self) -> None:
+        app = AppTest.from_file(self.app_path, default_timeout=30).run()
+        app.feedback[0].set_value(4)
+        app.button[-1].click().run()
+
+        self.assertEqual(len(app.exception), 0)
+        self.assertTrue(
+            any("something went wrong" in error.value for error in app.error)
+        )
 
     @patch.dict(
         "os.environ",
@@ -67,16 +82,24 @@ class AppSmokeTests(unittest.TestCase):
         mock_urlopen.return_value.__enter__.return_value = response
 
         app = AppTest.from_file(self.app_path, default_timeout=30).run()
-        app.radio[0].set_value("Feature idea")
+        app.feedback[0].set_value(4)
+        app.pills[0].set_value(["Helpful code examples", "Add more techniques"])
         app.text_area[0].set_value("Please add another threshold comparison.")
-        app.text_input[0].set_value("visitor@example.com")
         app.button[-1].click().run()
 
         self.assertEqual(len(app.exception), 0)
         self.assertTrue(
-            any("sent privately to Kasra" in success.value for success in app.success)
+            any(
+                "anonymous feedback was sent privately" in success.value
+                for success in app.success
+            )
         )
         mock_urlopen.assert_called_once()
+
+        request = mock_urlopen.call_args.args[0]
+        request_body = request.data.decode("utf-8")
+        self.assertIn("rating=5+%2F+5", request_body)
+        self.assertIn("Helpful+code+examples%2C+Add+more+techniques", request_body)
 
     def test_appearance_control_switches_to_dark_theme(self) -> None:
         app = AppTest.from_file(self.app_path, default_timeout=30).run()

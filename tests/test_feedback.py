@@ -35,7 +35,7 @@ class FeedbackDeliveryTests(unittest.TestCase):
                 validate_formspree_endpoint(endpoint)
 
     @patch("src.feedback.urlopen")
-    def test_submission_contains_feedback_context_without_a_recipient_email(
+    def test_submission_contains_anonymous_structured_feedback(
         self, mock_urlopen: MagicMock
     ) -> None:
         response = MagicMock()
@@ -45,19 +45,36 @@ class FeedbackDeliveryTests(unittest.TestCase):
         submit_feedback(
             "https://formspree.io/f/example-id",
             FeedbackSubmission(
-                category="Feature idea",
+                category="Very useful",
                 message="Add a side-by-side threshold comparison.",
                 technique="Thresholding / Otsu threshold",
-                reply_email="visitor@example.com",
+                rating=4,
+                highlights=("Helpful code examples", "Add more techniques"),
             ),
         )
 
         request = mock_urlopen.call_args.args[0]
         fields = parse_qs(request.data.decode("utf-8"))
-        self.assertEqual(fields["feedback_type"], ["Feature idea"])
+        self.assertEqual(fields["feedback_type"], ["Very useful"])
         self.assertEqual(fields["current_technique"], ["Thresholding / Otsu threshold"])
-        self.assertEqual(fields["email"], ["visitor@example.com"])
+        self.assertEqual(fields["rating"], ["5 / 5"])
+        self.assertEqual(
+            fields["highlights"],
+            ["Helpful code examples, Add more techniques"],
+        )
+        self.assertNotIn("email", fields)
         self.assertNotIn("recipient", fields)
+
+    def test_quick_rating_does_not_require_a_written_comment(self) -> None:
+        fields = FeedbackSubmission(
+            category="Useful",
+            message="",
+            technique="Edges / Canny edges",
+            rating=3,
+        ).as_form_fields()
+
+        self.assertEqual(fields["rating"], "4 / 5")
+        self.assertEqual(fields["message"], "No written comment")
 
     @patch("src.feedback.urlopen")
     def test_delivery_failure_is_reported(self, mock_urlopen: MagicMock) -> None:

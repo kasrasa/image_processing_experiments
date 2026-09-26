@@ -11,8 +11,10 @@ The app turns a collection of image-processing experiments into a structured,
 browser-based playground. It is also a working example of Echelon Consulting's approach:
 research mindset, production habits, and clear technical communication.
 
-Visitors can also send private feedback and feature requests from inside the app. The
-notification recipient is configured outside the repository and is never displayed publicly.
+Visitors can send anonymous feedback from inside the app with a quick face rating and
+selectable reasons. A written note is optional, and no visitor account, sign-in, or email is
+required. The notification recipient is configured outside the repository and is never
+displayed publicly.
 
 ![OpenCV Parameter Explorer interface](docs/opencv-parameter-explorer.png)
 
@@ -100,6 +102,9 @@ reviewed and tested before it becomes public.
    ```toml
    FORMSPREE_ENDPOINT = "https://formspree.io/f/your-form-id"
    ```
+
+Only the app owner needs a Formspree account. Visitors remain inside the explorer and submit
+anonymously without creating an account or opening a third-party page.
 
 For local testing, copy `.streamlit/secrets.toml.example` to `.streamlit/secrets.toml` and
 replace the placeholder. The real secrets file is ignored by Git. The notification email
