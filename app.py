@@ -758,7 +758,7 @@ with st.container(border=True):
                     "Your feedback could not be sent right now. Please try again in a moment."
                 )
             else:
-                st.success("Thank you—your anonymous feedback was sent privately.")
+                st.success("Thank you. your anonymous feedback was sent privately.")
 
 st.markdown(
     """
