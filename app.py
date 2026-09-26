@@ -34,6 +34,23 @@ from src.operation_registry import (
 )
 from src.operations import OperationResult, apply_operation
 
+FEEDBACK_RATINGS = {
+    0: "Very difficult",
+    1: "Difficult",
+    2: "Neutral",
+    3: "Useful",
+    4: "Very useful",
+}
+
+FEEDBACK_REASONS = (
+    "Easy to understand",
+    "Useful controls",
+    "Helpful code examples",
+    "Needs clearer explanations",
+    "Add more techniques",
+    "Something did not work",
+)
+
 
 def feedback_endpoint() -> str:
     """Read the private delivery endpoint from the host environment."""
@@ -45,19 +62,6 @@ def feedback_endpoint() -> str:
         return str(st.secrets.get("FORMSPREE_ENDPOINT", "")).strip()
     except FileNotFoundError:
         return ""
-
-
-def looks_like_email(value: str) -> bool:
-    """Apply a small usability check without rejecting valid uncommon addresses."""
-
-    local_part, separator, domain = value.partition("@")
-    return bool(
-        local_part
-        and separator
-        and domain
-        and "." in domain
-        and not any(character.isspace() for character in value)
-    )
 
 
 st.set_page_config(
@@ -690,57 +694,61 @@ with histogram_tab:
     st.line_chart(histogram_data, color=chart_colors)
 
 with st.container(border=True):
-    st.markdown("### Help improve this explorer")
+    st.markdown("### How useful was this explorer?")
     st.caption(
-        "Tell me what worked, what was unclear, or which computer-vision feature you would "
-        "like to explore next. Your feedback is sent privately."
+        "A quick reaction is enough. No account, sign-in, or email is required, and your "
+        "response is sent privately."
     )
-    with st.form("feedback_form", clear_on_submit=False):
-        feedback_category = st.radio(
-            "What would you like to share?",
-            ("General feedback", "Feature idea", "Problem or confusing behavior"),
-            horizontal=True,
+    with st.form("feedback_form", clear_on_submit=True):
+        feedback_rating = st.feedback(
+            "faces",
+            key="feedback_rating",
         )
-        feedback_message = st.text_area(
-            "Your feedback",
-            placeholder="What should I keep, change, or add?",
-            max_chars=2_000,
-            height=120,
+        feedback_reasons = st.pills(
+            "What stood out? (optional)",
+            FEEDBACK_REASONS,
+            selection_mode="multi",
+            key="feedback_reasons",
+            help="Choose as many as you like.",
+            wrap=True,
         )
-        feedback_reply_email = st.text_input(
-            "Email for a reply (optional)",
-            placeholder="you@example.com",
-            max_chars=254,
-            help="Used only if Kasra needs to follow up. It is never displayed publicly.",
-        )
+        with st.expander("Add a short note or feature idea (optional)"):
+            feedback_message = st.text_area(
+                "Anything else I should know?",
+                placeholder="For example: add adaptive thresholding or explain Canny edges more.",
+                max_chars=2_000,
+                height=100,
+                label_visibility="collapsed",
+            )
         feedback_submitted = st.form_submit_button(
-            "Send feedback",
+            "Send anonymous feedback",
             type="primary",
         )
 
     if feedback_submitted:
         message = feedback_message.strip()
-        reply_email = feedback_reply_email.strip()
+        reasons = tuple(feedback_reasons or ())
         endpoint = feedback_endpoint()
 
-        if len(message) < 5:
-            st.warning("Please add a little more detail before sending your feedback.")
-        elif reply_email and not looks_like_email(reply_email):
-            st.warning("Please check the optional reply email or leave it blank.")
+        if feedback_rating is None and not reasons and not message:
+            st.warning(
+                "Choose a face, a quick reason, or add a short note before sending."
+            )
         elif not endpoint:
             st.error(
-                "Sorry, something went wrong with feedback delivery."
-                "We are looking into it."
+                "Sorry, something went wrong with feedback delivery. We are looking into it."
             )
         else:
+            rating_label = FEEDBACK_RATINGS.get(feedback_rating, "Not rated")
             try:
                 submit_feedback(
                     endpoint,
                     FeedbackSubmission(
-                        category=feedback_category,
+                        category=rating_label,
                         message=message,
                         technique=f"{selected_category} / {operation.name}",
-                        reply_email=reply_email,
+                        rating=feedback_rating,
+                        highlights=reasons,
                     ),
                 )
             except FeedbackConfigurationError:
@@ -750,7 +758,7 @@ with st.container(border=True):
                     "Your feedback could not be sent right now. Please try again in a moment."
                 )
             else:
-                st.success("Thank you—your feedback was sent privately to Kasra.")
+                st.success("Thank you—your anonymous feedback was sent privately.")
 
 st.markdown(
     """
