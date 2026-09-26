@@ -63,6 +63,10 @@ class FeedbackDeliveryTests(unittest.TestCase):
 
         request = mock_urlopen.call_args.args[0]
         fields = parse_qs(request.data.decode("utf-8"))
+        self.assertEqual(
+            request.headers["User-agent"],
+            "Kasra-Sadatsharifi-OpenCV-Explorer/1.0",
+        )
         self.assertEqual(fields["feedback_type"], ["Very useful"])
         self.assertEqual(fields["current_technique"], ["Thresholding / Otsu threshold"])
         self.assertEqual(fields["rating"], ["5 / 5"])
