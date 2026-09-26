@@ -65,7 +65,7 @@ def feedback_endpoint() -> str:
 
 
 st.set_page_config(
-    page_title="OpenCV Parameter Explorer | Echelon Consulting",
+    page_title="OpenCV Parameter Explorer | Kasra Sadatsharifi",
     page_icon="◉",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -333,7 +333,7 @@ st.markdown(
             line-height: 1.55;
             padding: 0.9rem 1rem;
         }
-        .lab-consulting {
+        .project-footer {
             background:
                 radial-gradient(circle at 96% 12%, rgba(163, 230, 53, 0.20), transparent 31%),
                 #111827;
@@ -343,18 +343,18 @@ st.markdown(
             overflow: hidden;
             padding: 1rem 1.15rem;
         }
-        .lab-consulting p {
+        .project-footer p {
             color: #e2e8f0;
             font-size: 0.95rem;
             line-height: 1.55;
             margin: 0;
         }
-        .lab-consulting a {
+        .project-footer a {
             color: #bef264 !important;
             font-weight: 750;
             text-decoration: none !important;
         }
-        .lab-consulting a:hover {
+        .project-footer a:hover {
             text-decoration: underline !important;
         }
         @media (max-width: 900px) {
@@ -493,7 +493,7 @@ def luminance_histogram(image: np.ndarray) -> np.ndarray:
 st.markdown(
     """
     <div class="lab-hero">
-        <div class="lab-eyebrow">Echelon Consulting · Interactive image processing lab</div>
+        <div class="lab-eyebrow">Kasra Sadatsharifi · Interactive computer vision project</div>
         <h1>OpenCV Parameter Explorer</h1>
         <p>
             See what each parameter changes, compare settings side by side, and copy the
@@ -501,7 +501,7 @@ st.markdown(
         </p>
         <div class="lab-slogan">Research mindset. Production habits.</div>
         <div class="lab-powered">
-            Powered by <strong>Echelon Consulting</strong>
+            Created by <strong>Kasra Sadatsharifi</strong>
         </div>
     </div>
     """,
@@ -696,8 +696,8 @@ with histogram_tab:
 with st.container(border=True):
     st.markdown("### How useful was this explorer?")
     st.caption(
-        "Let us know what stood out, what could be improved, or what features you'd like to see next."
-        "We appreciate your feedback very much."
+        "Let me know what stood out, what could be improved, or what features you'd like "
+        "to see next. No account, sign-in, or email is required."
     )
     with st.form("feedback_form", clear_on_submit=True):
         feedback_rating = st.feedback(
@@ -762,14 +762,14 @@ with st.container(border=True):
 
 st.markdown(
     """
-    <section class="lab-consulting" aria-label="About Echelon Consulting">
+    <section class="project-footer" aria-label="About the creator">
         <p>
-            Need help designing, implementing, improving your AI project contact us at
+            Created as an independent computer-vision learning project by
             <a
-                href="https://echelonconsulting.vercel.app"
+                href="https://github.com/kasrasa"
                 target="_blank"
                 rel="noopener noreferrer"
-            >Echelon Consulting</a> can help.
+            >Kasra Sadatsharifi</a>.
         </p>
     </section>
     """,

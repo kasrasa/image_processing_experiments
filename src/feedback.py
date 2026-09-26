@@ -84,7 +84,7 @@ def submit_feedback(
         headers={
             "Accept": "application/json",
             "Content-Type": "application/x-www-form-urlencoded",
-            "User-Agent": "Echelon-OpenCV-Explorer/1.0",
+            "User-Agent": "Kasra-Sadatsharifi-OpenCV-Explorer/1.0",
         },
         method="POST",
     )

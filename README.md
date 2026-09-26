@@ -1,6 +1,8 @@
 # OpenCV Parameter Explorer
 
-An Echelon Consulting learning lab by Kasra Sadatsharifi. [`https://echelonlabsimageprocessing.streamlit.app/`](https://echelonlabsimageprocessing.streamlit.app/)
+An interactive computer-vision learning project by Kasra Sadatsharifi.
+
+A hosted demo link will be added after the deployment URL is finalized.
 
 An interactive learning tool for classical computer vision. Upload an image, adjust an
 OpenCV parameter, and see the effect immediately beside the original. Every technique
@@ -8,15 +10,13 @@ includes a plain-language explanation, a parameter sweep, a luminance histogram,
 copy-ready Python example matching the selected settings.
 
 The app turns a collection of image-processing experiments into a structured,
-browser-based playground. It is also a working example of Echelon Consulting's approach:
-research mindset, production habits, and clear technical communication.
+browser-based playground. It reflects a research mindset, production habits, and clear
+technical communication.
 
 Visitors can send anonymous feedback from inside the app with a quick face rating and
 selectable reasons. A written note is optional, and no visitor account, sign-in, or email is
 required. The notification recipient is configured outside the repository and is never
 displayed publicly.
-
-![OpenCV Parameter Explorer interface](docs/opencv-parameter-explorer.png)
 
 ## What you can explore
 
@@ -112,8 +112,8 @@ anonymously without creating an account or opening a third-party page.
 The notification email stays in Formspree and is not stored in the repository or rendered in
 the app.
 
-## About Echelon Consulting
+## About the author
 
-Echelon Consulting turns computer-vision and machine-learning questions into measurable
-experiments, practical prototypes, and production-ready paths. Learn more at
-[echelonconsulting.vercel.app](https://echelonconsulting.vercel.app).
+Kasra Sadatsharifi is a computer-vision and machine-learning engineer interested in turning
+technical experiments into clear, practical tools. More projects are available on
+[GitHub](https://github.com/kasrasa).

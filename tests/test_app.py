@@ -26,14 +26,14 @@ class AppSmokeTests(unittest.TestCase):
         )
         rendered_markdown = "\n".join(block.value for block in app.markdown)
         normalized_markdown = " ".join(rendered_markdown.split())
-        self.assertIn("Powered by", rendered_markdown)
-        self.assertIn("Echelon Consulting", rendered_markdown)
+        self.assertIn("Created by", rendered_markdown)
+        self.assertIn("Kasra Sadatsharifi", rendered_markdown)
         self.assertIn("Research mindset. Production habits.", rendered_markdown)
         self.assertIn(
-            "Need help designing, implementing, improving your AI project contact us at",
+            "Created as an independent computer-vision learning project by",
             normalized_markdown,
         )
-        self.assertIn("https://echelonconsulting.vercel.app", rendered_markdown)
+        self.assertIn("https://github.com/kasrasa", rendered_markdown)
         self.assertEqual(len(app.feedback), 1)
         self.assertIsNone(app.feedback[0].value)
         self.assertEqual(app.pills[0].label, "What stood out? (optional)")
