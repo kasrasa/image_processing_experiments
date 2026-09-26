@@ -83,15 +83,6 @@ python -m unittest discover -v
 The test suite renders every registered operation with its default parameters and checks
 the numeric safeguards used for color and noise operations.
 
-## Deployment (when ready)
-
-The repository is compatible with Streamlit Community Cloud: select `app.py` as the entry
-point and let the service install `requirements.txt`. `opencv-python-headless` is used so
-the hosted app does not require desktop GUI libraries.
-
-Deployment is intentionally separate from local development, so the interface can be
-reviewed and tested before it becomes public.
-
 
 ## About the author
 
