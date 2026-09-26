@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from io import BytesIO
 from typing import Any
 
@@ -11,6 +12,12 @@ import pandas as pd
 import streamlit as st
 from PIL import Image
 
+from src.feedback import (
+    FeedbackConfigurationError,
+    FeedbackDeliveryError,
+    FeedbackSubmission,
+    submit_feedback,
+)
 from src.image_utils import (
     create_sample_image,
     image_dimensions,
@@ -26,6 +33,32 @@ from src.operation_registry import (
     operations_for_category,
 )
 from src.operations import OperationResult, apply_operation
+
+
+def feedback_endpoint() -> str:
+    """Read the private delivery endpoint from the host environment."""
+
+    environment_endpoint = os.getenv("FORMSPREE_ENDPOINT", "").strip()
+    if environment_endpoint:
+        return environment_endpoint
+    try:
+        return str(st.secrets.get("FORMSPREE_ENDPOINT", "")).strip()
+    except FileNotFoundError:
+        return ""
+
+
+def looks_like_email(value: str) -> bool:
+    """Apply a small usability check without rejecting valid uncommon addresses."""
+
+    local_part, separator, domain = value.partition("@")
+    return bool(
+        local_part
+        and separator
+        and domain
+        and "." in domain
+        and not any(character.isspace() for character in value)
+    )
+
 
 st.set_page_config(
     page_title="OpenCV Parameter Explorer | Echelon Consulting",
@@ -143,6 +176,7 @@ st.markdown(
         }
         [data-baseweb="select"] > div,
         [data-baseweb="input"],
+        [data-baseweb="textarea"],
         [data-testid="stSelectbox"] [role="group"],
         [data-testid="stFileUploaderDropzone"] {
             background: var(--lab-control-bg) !important;
@@ -154,10 +188,15 @@ st.markdown(
         [data-testid="stSelectbox"] input,
         [data-testid="stSelectbox"] button,
         [data-testid="stSelectbox"] svg,
+        [data-baseweb="textarea"] textarea,
         [data-testid="stFileUploaderDropzone"] small {
             background: transparent !important;
             color: var(--lab-ink) !important;
             fill: var(--lab-ink) !important;
+        }
+        [data-testid="stForm"] {
+            background: var(--lab-surface-soft);
+            border-color: var(--lab-line);
         }
         [data-testid="stDownloadButton"] button,
         [data-testid="stBaseButton-secondary"] {
@@ -649,6 +688,69 @@ with histogram_tab:
     histogram_data.index.name = "Brightness"
     chart_colors = ["#94a3b8", "#a3e635"] if dark_mode else ["#64748b", "#65a30d"]
     st.line_chart(histogram_data, color=chart_colors)
+
+with st.container(border=True):
+    st.markdown("### Help improve this explorer")
+    st.caption(
+        "Tell me what worked, what was unclear, or which computer-vision feature you would "
+        "like to explore next. Your feedback is sent privately."
+    )
+    with st.form("feedback_form", clear_on_submit=False):
+        feedback_category = st.radio(
+            "What would you like to share?",
+            ("General feedback", "Feature idea", "Problem or confusing behavior"),
+            horizontal=True,
+        )
+        feedback_message = st.text_area(
+            "Your feedback",
+            placeholder="What should I keep, change, or add?",
+            max_chars=2_000,
+            height=120,
+        )
+        feedback_reply_email = st.text_input(
+            "Email for a reply (optional)",
+            placeholder="you@example.com",
+            max_chars=254,
+            help="Used only if Kasra needs to follow up. It is never displayed publicly.",
+        )
+        feedback_submitted = st.form_submit_button(
+            "Send feedback",
+            type="primary",
+        )
+
+    if feedback_submitted:
+        message = feedback_message.strip()
+        reply_email = feedback_reply_email.strip()
+        endpoint = feedback_endpoint()
+
+        if len(message) < 5:
+            st.warning("Please add a little more detail before sending your feedback.")
+        elif reply_email and not looks_like_email(reply_email):
+            st.warning("Please check the optional reply email or leave it blank.")
+        elif not endpoint:
+            st.error(
+                "Feedback delivery is not configured yet. Please try again after the public "
+                "demo is deployed."
+            )
+        else:
+            try:
+                submit_feedback(
+                    endpoint,
+                    FeedbackSubmission(
+                        category=feedback_category,
+                        message=message,
+                        technique=f"{selected_category} / {operation.name}",
+                        reply_email=reply_email,
+                    ),
+                )
+            except FeedbackConfigurationError:
+                st.error("Feedback delivery is temporarily misconfigured.")
+            except FeedbackDeliveryError:
+                st.error(
+                    "Your feedback could not be sent right now. Please try again in a moment."
+                )
+            else:
+                st.success("Thank you—your feedback was sent privately to Kasra.")
 
 st.markdown(
     """
