@@ -1,0 +1,229 @@
+.stApp,
+[data-testid="stAppViewContainer"],
+[data-testid="stMain"] {
+    background: var(--lab-bg);
+    color: var(--lab-ink);
+    color-scheme: var(--lab-color-scheme);
+}
+[data-testid="stHeader"] {
+    background: var(--lab-header-bg);
+}
+[data-testid="stSidebar"] {
+    background: var(--lab-sidebar-bg);
+    border-right: 1px solid var(--lab-line);
+}
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3,
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] label,
+[data-testid="stWidgetLabel"] p,
+[data-testid="stCaptionContainer"] p,
+[data-testid="stMetricLabel"] p,
+[data-testid="stMetricValue"] div,
+button[role="tab"] {
+    color: var(--lab-ink);
+}
+[data-testid="stMarkdownContainer"] > h1,
+[data-testid="stMarkdownContainer"] > h2,
+[data-testid="stMarkdownContainer"] > h3,
+[data-testid="stMarkdownContainer"] > h4,
+[data-testid="stMarkdownContainer"] > p {
+    color: var(--lab-ink);
+}
+[data-testid="stColumn"] [data-testid="stLayoutWrapper"] {
+    background: var(--lab-surface);
+    border-color: var(--lab-line) !important;
+}
+[data-baseweb="select"] > div,
+[data-baseweb="input"],
+[data-baseweb="textarea"],
+[data-testid="stSelectbox"] [role="group"],
+[data-testid="stFileUploaderDropzone"] {
+    background: var(--lab-control-bg) !important;
+    border-color: var(--lab-line) !important;
+    color: var(--lab-ink) !important;
+}
+[data-baseweb="select"] span,
+[data-baseweb="select"] svg,
+[data-testid="stSelectbox"] input,
+[data-testid="stSelectbox"] button,
+[data-testid="stSelectbox"] svg,
+[data-baseweb="textarea"] textarea,
+[data-testid="stFileUploaderDropzone"] small {
+    background: transparent !important;
+    color: var(--lab-ink) !important;
+    fill: var(--lab-ink) !important;
+}
+[data-testid="stForm"] {
+    background: var(--lab-surface-soft);
+    border-color: var(--lab-line);
+}
+[data-testid="stDownloadButton"] button,
+[data-testid="stBaseButton-secondary"] {
+    background: var(--lab-surface);
+    border-color: var(--lab-line);
+    color: var(--lab-ink);
+}
+[data-testid="stButtonGroup"] button[data-variant="segmented_control"] {
+    background: var(--lab-control-bg) !important;
+    border-color: var(--lab-line) !important;
+    color: var(--lab-ink) !important;
+}
+[data-testid="stButtonGroup"] button[data-variant="segmented_control"] p {
+    color: var(--lab-ink) !important;
+}
+[data-testid="stButtonGroup"] button[data-variant="segmented_control"][data-selected="true"] {
+    background: var(--lab-accent-soft) !important;
+    border-color: var(--lab-accent) !important;
+    color: var(--lab-ink) !important;
+}
+.block-container {
+    max-width: 1440px;
+    padding-top: 2.2rem;
+    padding-bottom: 4rem;
+}
+.lab-hero {
+    isolation: isolate;
+    overflow: hidden;
+    padding: 1.55rem 1.7rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid var(--lab-line);
+    border-radius: 18px;
+    position: relative;
+    background:
+        radial-gradient(circle at 92% 18%, var(--lab-hero-glow), transparent 27%),
+        linear-gradient(125deg, var(--lab-hero-start), var(--lab-hero-end));
+}
+.lab-eyebrow {
+    color: var(--lab-accent);
+    font-size: 0.76rem;
+    font-weight: 750;
+    letter-spacing: 0.13em;
+    line-height: 1.45;
+    margin-bottom: 0.45rem;
+    overflow-wrap: anywhere;
+    padding-right: 20rem;
+    text-transform: uppercase;
+    white-space: normal !important;
+}
+.lab-hero h1 {
+    color: var(--lab-ink) !important;
+    font-size: clamp(2rem, 4vw, 3.45rem);
+    letter-spacing: -0.045em;
+    line-height: 1.02;
+    margin: 0;
+}
+.lab-hero p {
+    color: var(--lab-muted);
+    font-size: 1.03rem;
+    line-height: 1.6;
+    margin: 0.7rem 0 0;
+    max-width: 760px;
+}
+.lab-slogan {
+    align-items: center;
+    color: var(--lab-slogan);
+    display: flex;
+    font-size: 0.8rem;
+    font-weight: 700;
+    gap: 0.5rem;
+    letter-spacing: 0.035em;
+    margin-top: 0.8rem;
+}
+.lab-slogan::before {
+    background: var(--lab-accent-bright);
+    border-radius: 999px;
+    content: "";
+    height: 0.5rem;
+    width: 0.5rem;
+}
+.lab-powered {
+    backdrop-filter: blur(8px);
+    background: var(--lab-badge-bg);
+    border: 1px solid rgba(77, 124, 15, 0.22);
+    border-radius: 999px;
+    color: var(--lab-badge-text);
+    font-size: 0.69rem;
+    font-weight: 650;
+    letter-spacing: 0.035em;
+    line-height: 1.35;
+    max-width: 19rem;
+    padding: 0.5rem 0.72rem;
+    position: absolute;
+    right: 1.2rem;
+    text-align: center;
+    top: 1.15rem;
+}
+.lab-powered strong {
+    color: var(--lab-ink);
+}
+.lab-technique {
+    border-left: 4px solid var(--lab-accent);
+    margin: 0.55rem 0 1.1rem;
+    padding: 0.15rem 0 0.15rem 1rem;
+}
+.lab-technique strong {
+    color: var(--lab-ink);
+    display: block;
+    font-size: 1.2rem;
+    margin-bottom: 0.15rem;
+}
+.lab-technique span {
+    color: var(--lab-muted);
+    line-height: 1.5;
+}
+[data-testid="stImage"] img {
+    border-radius: 10px;
+}
+[data-testid="stMetric"] {
+    background: var(--lab-metric-bg);
+    border: 1px solid var(--lab-line);
+    border-radius: 12px;
+    padding: 0.75rem 0.9rem;
+}
+.lab-callout {
+    background: var(--lab-callout-bg);
+    border: 1px solid var(--lab-callout-border);
+    border-radius: 12px;
+    color: var(--lab-ink);
+    line-height: 1.55;
+    padding: 0.9rem 1rem;
+}
+.project-footer {
+    background:
+        radial-gradient(circle at 96% 12%, rgba(163, 230, 53, 0.20), transparent 31%),
+        #111827;
+    border: 1px solid rgba(163, 230, 53, 0.28);
+    border-radius: 14px;
+    margin-top: 1.6rem;
+    overflow: hidden;
+    padding: 1rem 1.15rem;
+}
+.project-footer p {
+    color: #e2e8f0;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    margin: 0;
+}
+.project-footer a {
+    color: #bef264 !important;
+    font-weight: 750;
+    text-decoration: none !important;
+}
+.project-footer a:hover {
+    text-decoration: underline !important;
+}
+@media (max-width: 900px) {
+    .lab-hero {
+        padding-right: 1.7rem;
+    }
+    .lab-eyebrow {
+        padding-right: 0;
+    }
+    .lab-powered {
+        display: inline-block;
+        margin-top: 1rem;
+        position: static;
+    }
+}

@@ -64,14 +64,23 @@ preview.
 ## Project structure
 
 ```text
-app.py                         Streamlit interface
+app.py                         Small application composition layer
+assets/styles.css              Shared visual styles
+src/explorer.py                Parameter sweeps, histograms, and PNG encoding
 src/feedback.py                Private feedback delivery and endpoint validation
 src/image_utils.py             Upload handling, sample image, and display helpers
 src/operation_registry.py      Technique descriptions and UI parameter definitions
 src/operations.py              Reusable OpenCV processing functions
+src/ui/components.py           Hero, technique heading, and project footer
+src/ui/feedback_panel.py       Anonymous feedback form and delivery states
+src/ui/results.py              Result comparison and educational tabs
+src/ui/sidebar.py              Image, technique, and parameter controls
+src/ui/theme.py                Page configuration and light/dark theme setup
+tests/test_app.py              Streamlit interface smoke tests
+tests/test_explorer.py         Parameter sweep, histogram, and encoding tests
 tests/test_feedback.py         Feedback privacy, payload, and failure checks
-tests/test_operations.py       Smoke and numeric-safety checks
-.streamlit/config.toml         Local and hosted visual theme
+tests/test_operations.py       Processing and numeric-safety checks
+.streamlit/config.toml         Streamlit server and base-theme configuration
 ```
 
 ## Verify the processing layer
@@ -80,9 +89,8 @@ tests/test_operations.py       Smoke and numeric-safety checks
 python -m unittest discover -v
 ```
 
-The test suite renders every registered operation with its default parameters and checks
-the numeric safeguards used for color and noise operations.
-
+The test suite renders the Streamlit interface, exercises every registered operation with
+its default parameters, and checks feedback privacy and numeric safeguards.
 
 ## About the author
 
