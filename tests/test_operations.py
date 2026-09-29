@@ -6,7 +6,7 @@ import unittest
 
 import numpy as np
 
-from src.image_utils import create_sample_image
+from src.image_utils import convert_to_grayscale_rgb, create_sample_image
 from src.operation_registry import OPERATION_LIST, code_snippet, default_parameters
 from src.operations import add_gaussian_noise, adjust_hsv, apply_operation
 
@@ -49,6 +49,28 @@ class OperationSmokeTests(unittest.TestCase):
                 expected = apply_operation(operation.key, self.image, parameters).image
                 namespace = {"image_rgb": self.image.copy()}
                 exec(code_snippet(operation.key, parameters), namespace)  # noqa: S102
+                np.testing.assert_array_equal(namespace["result"], expected)
+
+    def test_every_operation_and_snippet_supports_grayscale_input_mode(self) -> None:
+        grayscale_image = convert_to_grayscale_rgb(self.image)
+
+        for operation in OPERATION_LIST:
+            with self.subTest(operation=operation.key):
+                parameters = default_parameters(operation)
+                expected = apply_operation(
+                    operation.key,
+                    grayscale_image,
+                    parameters,
+                ).image
+                namespace = {"image_rgb": self.image.copy()}
+                exec(  # noqa: S102
+                    code_snippet(
+                        operation.key,
+                        parameters,
+                        grayscale_input=True,
+                    ),
+                    namespace,
+                )
                 np.testing.assert_array_equal(namespace["result"], expected)
 
     def test_copyable_code_matches_alternate_branches(self) -> None:
