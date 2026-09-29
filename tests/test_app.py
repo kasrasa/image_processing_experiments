@@ -20,6 +20,8 @@ class AppSmokeTests(unittest.TestCase):
         self.assertEqual(app.selectbox[1].value, "HSV controls")
         self.assertEqual(app.segmented_control[0].label, "Appearance")
         self.assertEqual(app.segmented_control[0].value, "Light")
+        self.assertEqual(app.toggle[0].label, "Grayscale")
+        self.assertFalse(app.toggle[0].value)
         self.assertEqual(
             [tab.label for tab in app.tabs],
             ["Learn", "Copy the code", "Compare settings", "Histogram"],
@@ -122,6 +124,28 @@ class AppSmokeTests(unittest.TestCase):
             [("Low / high thresholds", (60, 150)), ("Pre-blur kernel", 5)],
         )
         self.assertTrue(any("cv2.Canny" in block.value for block in app.code))
+
+    def test_grayscale_toggle_updates_the_working_input_and_code(self) -> None:
+        app = AppTest.from_file(self.app_path, default_timeout=30).run()
+        app.toggle[0].set_value(True).run()
+
+        self.assertEqual(len(app.exception), 0)
+        self.assertTrue(app.toggle[0].value)
+        self.assertTrue(
+            any("Grayscale input" in caption.value for caption in app.caption)
+        )
+        self.assertTrue(
+            any("cv2.COLOR_GRAY2RGB" in block.value for block in app.code)
+        )
+
+        app.toggle[0].set_value(False).run()
+
+        self.assertEqual(len(app.exception), 0)
+        self.assertFalse(app.toggle[0].value)
+        self.assertTrue(any("RGB input" in caption.value for caption in app.caption))
+        self.assertFalse(
+            any("cv2.COLOR_GRAY2RGB" in block.value for block in app.code)
+        )
 
 
 if __name__ == "__main__":

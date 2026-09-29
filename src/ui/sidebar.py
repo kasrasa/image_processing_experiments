@@ -9,7 +9,12 @@ import numpy as np
 import streamlit as st
 from PIL import Image
 
-from src.image_utils import create_sample_image, load_uploaded_image, resize_to_limit
+from src.image_utils import (
+    convert_to_grayscale_rgb,
+    create_sample_image,
+    load_uploaded_image,
+    resize_to_limit,
+)
 from src.operation_registry import (
     CATEGORY_ORDER,
     ControlSpec,
@@ -24,6 +29,7 @@ class ExplorerSelection:
 
     source_image: np.ndarray
     input_name: str
+    grayscale_mode: bool
     category: str
     operation: OperationSpec
     parameters: dict[str, Any]
@@ -125,6 +131,18 @@ def render_sidebar() -> ExplorerSelection:
     """Render all experiment controls and return their current values."""
 
     source_image, input_name = _render_image_source()
+    grayscale_mode = st.sidebar.toggle(
+        "Grayscale",
+        value=False,
+        help=(
+            "Use image luminance as the original input for every technique. "
+            "Turn this off to restore the untouched color image."
+        ),
+        key="grayscale_mode",
+    )
+    if grayscale_mode:
+        source_image = convert_to_grayscale_rgb(source_image)
+        st.sidebar.caption("Grayscale is now the original input for all techniques.")
 
     st.sidebar.divider()
     selected_category = st.sidebar.selectbox(
@@ -150,6 +168,7 @@ def render_sidebar() -> ExplorerSelection:
     return ExplorerSelection(
         source_image=source_image,
         input_name=input_name,
+        grayscale_mode=grayscale_mode,
         category=selected_category,
         operation=operation,
         parameters=parameters,

@@ -761,7 +761,12 @@ def default_parameters(operation: OperationSpec) -> dict[str, Any]:
     return {control.key: control.default for control in operation.controls}
 
 
-def code_snippet(key: str, parameters: dict[str, Any]) -> str:
+def code_snippet(
+    key: str,
+    parameters: dict[str, Any],
+    *,
+    grayscale_input: bool = False,
+) -> str:
     """Return a copy-ready OpenCV example matching the current controls."""
     p = parameters
     header = (
@@ -769,6 +774,12 @@ def code_snippet(key: str, parameters: dict[str, Any]) -> str:
         "import numpy as np\n\n"
         "# image_rgb is a uint8 NumPy array in RGB order\n"
     )
+    if grayscale_input:
+        header += (
+            "# Match the explorer's Grayscale input mode while keeping RGB shape\n"
+            "gray_input = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2GRAY)\n"
+            "image_rgb = cv2.cvtColor(gray_input, cv2.COLOR_GRAY2RGB)\n"
+        )
 
     if key == "hsv_adjust":
         body = f"""

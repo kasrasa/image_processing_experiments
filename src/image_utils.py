@@ -67,6 +67,7 @@ def create_sample_image(width: int = 960, height: int = 640) -> np.ndarray:
 
 def load_uploaded_image(uploaded_file: BinaryIO | BytesIO) -> np.ndarray:
     """Decode an uploaded image and return an RGB uint8 array."""
+    uploaded_file.seek(0)
     image = Image.open(uploaded_file)
     image = ImageOps.exif_transpose(image)
 
@@ -78,6 +79,28 @@ def load_uploaded_image(uploaded_file: BinaryIO | BytesIO) -> np.ndarray:
         image = image.convert("RGB")
 
     return np.asarray(image, dtype=np.uint8)
+
+
+def convert_to_grayscale_rgb(image: np.ndarray) -> np.ndarray:
+    """Return a grayscale rendering with three RGB-compatible channels.
+
+    Keeping three identical channels lets every registered operation accept the
+    same input shape while the pixels remain visually and numerically achromatic.
+    """
+    gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+    return cv2.cvtColor(gray, cv2.COLOR_GRAY2RGB)
+
+
+def is_grayscale_image(image: np.ndarray) -> bool:
+    """Return whether an image is single-channel or has equal RGB channels."""
+    if image.ndim == 2:
+        return True
+    if image.ndim != 3 or image.shape[2] != 3:
+        return False
+    return bool(
+        np.array_equal(image[:, :, 0], image[:, :, 1])
+        and np.array_equal(image[:, :, 1], image[:, :, 2])
+    )
 
 
 def resize_to_limit(image: np.ndarray, max_side: int = 1400) -> tuple[np.ndarray, bool]:

@@ -11,7 +11,7 @@ from src.explorer import (
     luminance_histogram,
     sweep_variants,
 )
-from src.image_utils import image_dimensions, mean_luminance
+from src.image_utils import image_dimensions, is_grayscale_image, mean_luminance
 from src.operation_registry import code_snippet
 from src.operations import OperationResult, apply_operation
 from src.ui.components import render_technique_heading
@@ -26,12 +26,13 @@ def _render_image_comparison(
     with original_column, st.container(border=True):
         st.subheader("Original")
         st.image(selection.source_image, width="stretch")
-        st.caption(f"RGB input · {image_dimensions(selection.source_image)}")
+        input_kind = "Grayscale" if selection.grayscale_mode else "RGB"
+        st.caption(f"{input_kind} input · {image_dimensions(selection.source_image)}")
 
     with result_column, st.container(border=True):
         st.subheader("Result")
         st.image(result.image, width="stretch", clamp=True)
-        output_kind = "Grayscale" if result.image.ndim == 2 else "RGB"
+        output_kind = "Grayscale" if is_grayscale_image(result.image) else "RGB"
         st.caption(f"{output_kind} output · {image_dimensions(result.image)}")
         st.download_button(
             "Download result as PNG",
@@ -86,7 +87,11 @@ def _render_code_tab(selection: ExplorerSelection) -> None:
         "NumPy array."
     )
     st.code(
-        code_snippet(selection.operation.key, selection.parameters),
+        code_snippet(
+            selection.operation.key,
+            selection.parameters,
+            grayscale_input=selection.grayscale_mode,
+        ),
         language="python",
         line_numbers=True,
     )
